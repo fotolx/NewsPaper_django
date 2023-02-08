@@ -1,12 +1,13 @@
 {% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
  
 {% block title %}
 Подробности
 {% endblock title %}
  
 {% block content %}
-<h1>{{  post.header }}</h1>
-<i>{{ post.creation_date_time| date:'d.M.Y' }}</i>
+<h1>{{ post.header | censor }}</h1>
+<i>{{ post.creation_date_time| date:'d-M-Y g:i' }}</i>
 <hr>
-    {{ post.main_text }}
+    {{ post.main_text | censor }}
 {% endblock content %}
