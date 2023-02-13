@@ -15,40 +15,12 @@
         <input type="submit" value="Найти">
     </form>
     {% if posts %} 
-        <table>
-            <tr>
-                <td><b>
-                    Автор</b>
-                </td>
-                <td><b>
-                    Заголовок</b>
-                </td>
-                <td><b>
-                    Дата создания</b>
-                </td>
-                <td><b>
-                    Превью текста</b>
-                </td>
-            </tr>
         {% for post in filter.qs %}
-
-            <tr>
-                <td>
-                    {{ post.author.username}} <br />
-                    ({{ post.author.username.first_name}} {{ post.author.username.last_name}})
-                 </td>
-                <td>
-                   <a href="{{ post.id }}">{{ post.header | censor  }} </a>
-                </td>
-                <td>
-                    {{ post.creation_date_time| date:'d-M-Y g:i' }}
-                </td>
-                <td>
-                    {{ post.main_text|censor|truncatechars:50 }}
-                </td>
-            </tr>
+            <span><h3><a href="{{ post.id }}">{{ post.header | censor  }} </a></h3>
+            <p><i>{{ post.creation_date_time| date:'d-M-Y g:i' }}</i> |
+            <i>{{ post.author.username}} [{{ post.author.username.first_name}} {{ post.author.username.last_name}}]</i> |
+            {{ post.main_text|censor|truncatechars:50 }}</p></span>
         {% endfor %}
-        </table>
     {% else %}
         <h2>Новостей нет!</h2>
     {% endif %}

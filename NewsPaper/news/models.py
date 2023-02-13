@@ -20,11 +20,11 @@ class Author(models.Model):
             sum_of_comments_to_author_articles += i['comment_rating']
         self.user_rating = 3*author_rating[0]['rating']+sum_of_author_comments+sum_of_comments_to_author_articles
         self.save()
-        pass
+
 
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=255, null=False)
-    pass
+
 
 class Post(models.Model):
     author = models.ForeignKey(Author, null=False, on_delete = models.CASCADE)
@@ -42,18 +42,18 @@ class Post(models.Model):
     header = models.CharField(max_length=255, null=False)
     main_text = models.TextField()
     rating = models.IntegerField(default=0)
-    pass
+
 
     def like(self):
         self.rating += 1
         self.save()
-        pass
+
 
     def dislike(self):
         if self.rating:
             self.rating -= 1
         self.save()
-        pass
+
 
     def preview(self):
         return self.main_text[:124]+'...'
@@ -61,7 +61,7 @@ class Post(models.Model):
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE)
     category = models.ForeignKey(Category, on_delete = models.CASCADE)
-    pass
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE)
@@ -69,15 +69,15 @@ class Comment(models.Model):
     comment_text = models.TextField()
     creation_date_time = models.DateTimeField()
     comment_rating = models.IntegerField(default=0)
-    pass
+
 
     def like(self):
         self.comment_rating += 1
         self.save()
-        pass
+
 
     def dislike(self):
         if self.comment_rating:
             self.comment_rating -= 1
         self.save()
-        pass
+
