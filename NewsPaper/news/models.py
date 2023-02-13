@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 class Author(models.Model):
     username = models.OneToOneField(User, on_delete=models.CASCADE)
     user_rating = models.IntegerField(default=0)
-    pass
+    
+    def __str__(self):
+        return f'{self.username}'
 
     def update_rating(self):
         author_rating = Post.objects.filter(author__exact=self).values('rating')

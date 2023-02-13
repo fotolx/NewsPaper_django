@@ -1,0 +1,55 @@
+{% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
+ 
+{% block title %}
+Новости
+{% endblock title %}
+ 
+{% block content %}
+<h1>Все новости</h1>
+    <h3>{{ time_now }}</h3> 
+    Новостей: {{ posts | length}} шт.
+    <hr>
+    <form method="GET">
+        {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы, придётся делать самому -->
+        <input type="submit" value="Найти">
+    </form>
+    {% if posts %} 
+        <table>
+            <tr>
+                <td><b>
+                    Автор</b>
+                </td>
+                <td><b>
+                    Заголовок</b>
+                </td>
+                <td><b>
+                    Дата создания</b>
+                </td>
+                <td><b>
+                    Превью текста</b>
+                </td>
+            </tr>
+        {% for post in filter.qs %}
+
+            <tr>
+                <td>
+                    {{ post.author.username}} <br />
+                    ({{ post.author.username.first_name}} {{ post.author.username.last_name}})
+                 </td>
+                <td>
+                   <a href="{{ post.id }}">{{ post.header | censor  }} </a>
+                </td>
+                <td>
+                    {{ post.creation_date_time| date:'d-M-Y g:i' }}
+                </td>
+                <td>
+                    {{ post.main_text|censor|truncatechars:50 }}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <h2>Новостей нет!</h2>
+    {% endif %}
+{% endblock content %}

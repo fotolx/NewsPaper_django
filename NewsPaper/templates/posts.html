@@ -11,32 +11,11 @@
     Новостей: {{ posts | length}} шт.
     <hr>
     {% if posts %} 
-        <table>
-            <tr>
-                <td><b>
-                    Заголовок
-                </td></b>
-                <td><b>
-                    Дата создания
-                </td></b>
-                <td><b>
-                    Превью текста
-                </td></b>
-            </tr>
         {% for post in posts %}
-            <tr>
-                <td>
-                   <a href="{{ post.id }}">{{ post.header | censor  }} </a></a>
-                </td>
-                <td>
-                    {{ post.creation_date_time| date:'d-M-Y g:i' }}
-                </td>
-                <td>
-                    {{ post.main_text|censor|truncatechars:50 }}
-                </td>
-            </tr>
+            <span><h3><a href="{{ post.id }}">{{ post.header | censor  }} </a></h3>
+            <p><i>{{ post.creation_date_time| date:'d-M-Y g:i' }}</i> |
+            {{ post.main_text|censor|truncatechars:50 }}</p></span>
         {% endfor %}
-        </table>
     {% else %}
         <h2>Новостей нет!</h2>
     {% endif %}
