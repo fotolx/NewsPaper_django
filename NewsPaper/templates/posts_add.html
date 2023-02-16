@@ -1,0 +1,80 @@
+{% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
+ 
+{% block title %}
+Новости
+{% endblock title %}
+ 
+{% block content %}
+<h1>Все новости</h1>
+    <h3>{{ time_now }}</h3> 
+    Новостей: {{ posts | length}} шт.
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="authors">Автор</label>
+
+        <select name="authors"> 
+            {% for author in authors %} 
+                <option value="{{ author.id }}"> {{ author.username }} [{{ author.username.first_name}} {{ author.username.last_name}}]</option> 
+            {% endfor %} 
+        </select> 
+
+        <label for="type">Тип публикации</label>
+        <select name="type"> 
+            {% for key, value in types %} 
+                <option value="{{ key }}">{{ value }}</option> 
+            {% endfor %} 
+        </select>         
+        <br>
+        <label for="header">header</label>
+        <input name="header">
+
+        <br>
+        <label for="main_text">main_text</label>
+        <textarea name="main_text">Write something here</textarea>
+        
+        <label for="rating">rating</label>
+        <input name="rating" min="0" type="number" value="0">
+    
+    <!-- Здесь будет список категорий. --> 
+    <select name="category"> 
+        {% for category in categories %} 
+            <option value="{{ category.id }}"> {{ category.name }} </option> 
+        {% endfor %} 
+    </select> 
+    <input type="submit" value="Добавить публикацию"> </form>
+    <hr>
+    {% if posts %} 
+        {% for post in posts %}
+            <span><h3><a href="{{ post.id }}">{{ post.header | censor  }} </a></h3>
+            <p><i>{{ post.creation_date_time| date:'d-M-Y g:i' }}</i> |
+            <i>{{ post.author.username}} [{{ post.author.username.first_name}} {{ post.author.username.last_name}}]</i> |
+            {{ post.main_text|censor|truncatechars:50 }}</p></span>
+        {% endfor %}
+    {% else %}
+        <h2>Новостей нет!</h2>
+    {% endif %}
+    {% if is_paginated %}  <!-- Pagination block -->
+        <!-- Previous page and first page -->
+        {% if page_obj.has_previous %}
+            <a href="?page=1">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+        {% endif %}
+    
+        <!-- Current page and neigbours -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a>{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+    
+        <!-- Next page and last page link -->
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">>>></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+    {% endif %}
+{% endblock content %}
