@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
+ 
+{% block title %}
+Изменить публикацию
+{% endblock title %}
+ 
+{% block content %}
+<form method="POST">
+    {% csrf_token %} 
+    {{ form }}
+    <input type="submit" value="Изменить публикацию">
+</form>
+
+{% endblock content %}

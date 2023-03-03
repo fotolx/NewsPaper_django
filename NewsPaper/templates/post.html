@@ -6,8 +6,11 @@
 {% endblock title %}
  
 {% block content %}
-<h1>{{ post.header | censor }}</h1>
-<i>{{ post.creation_date_time| date:'d-M-Y g:i' }}</i>
-<hr>
+    <h1>{{ post.header | censor }}</h1>
+    <i>{{ post.creation_date_time| date:'d-M-Y g:i' }} |
+    {{ post.author.username.first_name}} {{ post.author.username.last_name}}</i>
+    <a href="{% url 'edit_post' post.id %}">[Редактировать]</a>
+    <a href="{% url 'delete_post' post.id %}">[Удалить]</a>
+    <hr>
     {{ post.main_text | censor }}
 {% endblock content %}

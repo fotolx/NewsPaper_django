@@ -13,8 +13,14 @@
     {% if posts %} 
         {% for post in posts %}
             <span><h3><a href="{{ post.id }}">{{ post.header | censor  }} </a></h3>
-            <p><i>{{ post.creation_date_time| date:'d-M-Y g:i' }}</i> |
-            {{ post.main_text|censor|truncatechars:50 }}</p></span>
+            <p><i>{{ post.creation_date_time| date:'d-M-Y g:i' }} |
+                  {{ post.author.username.first_name}} {{ post.author.username.last_name}}</i><br>
+            {{ post.main_text|censor|truncatechars:50 }}
+            <br>
+            <a href="{% url 'edit_post' post.id %}">[Редактировать]</a>
+            <a href="{% url 'delete_post' post.id %}">[Удалить]</a>
+            </p>
+            </span>
         {% endfor %}
     {% else %}
         <h2>Новостей нет!</h2>

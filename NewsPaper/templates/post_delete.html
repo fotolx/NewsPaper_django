@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
+ 
+{% block title %}
+Удаление публикации
+{% endblock title %}
+ 
+{% block content %}
+<h1>Удаление публикации</h1>
+<h2>Вы действительно хотите удалить эту публикацию?</h2>
+
+<b>{{ post.header | censor }}</b><br>
+<i>{{ post.creation_date_time| date:'d-M-Y g:i' }} |
+{{ post.author.username.first_name}} {{ post.author.username.last_name}}</i><br>
+{{ post.main_text|censor|truncatechars:200 }}
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Удалить публикацию"> 
+    </form>    
+{% endblock content %}
