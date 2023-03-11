@@ -132,3 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 
+LOGIN_REDIRECT_URL = '/news/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # This logs any emails sent to the console

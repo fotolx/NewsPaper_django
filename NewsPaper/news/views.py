@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, UpdateView, CreateView, D
 from .models import *
 from .filters import PostFilter
 from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class PostsList(ListView):
@@ -81,7 +82,7 @@ class PostsAdd(CreateView):
         post.save()                                  # и сохраняем
         return super().get(request, *args, **kwargs) # отправляем пользователя обратно на GET-запрос.
 
-class PostEdit(UpdateView):
+class PostEdit(LoginRequiredMixin, UpdateView):
     # model = Post
     template_name = 'post_edit.html'
     form_class = PostForm
