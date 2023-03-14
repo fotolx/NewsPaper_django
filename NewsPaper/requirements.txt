@@ -1,0 +1,4 @@
+Django==4.1.5
+django_allauth==0.52.0
+django_filter==22.1
+Pillow==9.4.0

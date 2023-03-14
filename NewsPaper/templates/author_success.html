@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %} 
+ 
+{% block title %}
+Вы стали автором
+{% endblock title %}
+ 
+{% block content %}
+    <h1>Поздравляем, {{ user.get_username }}!</h1>
+        <h2>Вы стали автором!</h2>
+{% endblock content %}

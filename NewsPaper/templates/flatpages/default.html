@@ -54,7 +54,11 @@
           <li><a class="nav-link scrollto" href="/news/search">Search</a></li>
           <li><a class="nav-link scrollto" href="/news/add">Add post</a></li>
           {% if user.is_authenticated %}
-          <li><a class="nav-link scrollto" href="{% url 'account_logout' %}?next={{ request.path }}" >[{{ user.get_username }}] Logout</a></li>
+          {% if is_not_author %}
+          <li><a class="nav-link scrollto" href="{% url 'success' %}">{ Стать автором }</a></li>
+          {% endif %}
+          <li><a class="nav-link scrollto" href="/profile/">[{{ user.get_username }}]</a></li>
+          <li><a class="nav-link scrollto" href="{% url 'account_logout' %}?next={{ request.path }}" >Logout</a></li>
           {% else %}
           <li><a class="nav-link scrollto" href="{% url 'account_login' %}?next={{ request.path }}">Login</a></li>
           {% endif %}

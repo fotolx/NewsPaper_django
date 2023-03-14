@@ -413,7 +413,8 @@ h6 {
 }
 
 #hero .hero-info .btn-get-started,
-#hero .hero-info .btn-services {
+#hero .hero-info .btn-services,
+.btn-common-blue {
   font-family: "Montserrat", sans-serif;
   font-size: 14px;
   font-weight: 600;
@@ -426,10 +427,18 @@ h6 {
   color: #fff;
 }
 
-#hero .hero-info .btn-get-started {
+#hero .hero-info .btn-get-started,
+.btn-common-blue {
   background: #007bff;
   border: 2px solid #007bff;
   color: #fff;
+}
+
+.btn-common-blue:hover
+ {
+  background: none;
+  border-color: #004289;
+  color: #004289;
 }
 
 #hero .hero-info .btn-get-started:hover {

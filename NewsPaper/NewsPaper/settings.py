@@ -156,3 +156,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

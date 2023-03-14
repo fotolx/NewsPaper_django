@@ -6,6 +6,10 @@
 {% endblock title %}
  
 {% block content %}
+{% if is_not_author %}
+<h1>Ошибка! Нет прав на добавление публикации.</h1>
+<a class="btn-common-blue" href="{% url 'success' %}">Стать автором</a>
+{% else %}
 <h1>Добавление публикации</h1>
     <hr>
     <form method="POST">
@@ -42,4 +46,5 @@
         {% endfor %} 
     </select> 
     <input type="submit" value="Добавить публикацию"> </form>
+{% endif %}
 {% endblock content %}
