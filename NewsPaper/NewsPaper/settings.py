@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os # Добавлено
 from pathlib import Path
-
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -160,3 +161,12 @@ ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = '/tmp/app-messages'
+
+EMAIL_HOST = str(os.getenv('EMAIL_HOST'))
+EMAIL_PORT = str(os.getenv('EMAIL_PORT'))
+EMAIL_HOST_USER = str(os.getenv('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_HOST_PASSWORD'))
+EMAIL_USE_SSL = str(os.getenv('EMAIL_USE_SSL'))

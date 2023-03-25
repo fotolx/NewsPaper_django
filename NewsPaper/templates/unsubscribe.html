@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %} 
+ 
+{% block title %}
+Успешная отписка
+{% endblock title %}
+ 
+{% block content %}
+    <h1>Поздравляем, {{ user.get_username }}!</h1>
+        <h2>Вы успешно отписались от категории {{ unsubscribed.name }}!</h2>
+{% endblock content %}

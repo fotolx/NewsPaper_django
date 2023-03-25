@@ -13,6 +13,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from .forms import UpdateUserForm, UpdateProfileForm
+from django.core.mail import EmailMultiAlternatives
+from NewsPaper.settings import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_SSL
+from django.template.loader import render_to_string
 
 
 @login_required
@@ -40,10 +43,10 @@ class PostsList(ListView):
     queryset = Post.objects.order_by('-id')
     paginate_by = 10
     form_class = PostForm
+    fields = '__all__'
 
     def get_context_data(self, **kwargs): 
         context = super().get_context_data(**kwargs)
-        # context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset()) # вписываем наш фильтр в контекст
         context['categories'] = Category.objects.all()
         context['authors'] = Author.objects.all()
         context['types'] = Post.TYPES
@@ -57,7 +60,6 @@ class PostsList(ListView):
         return super().get(request, *args, **kwargs)
 
     
-
 class PostDetail(DetailView):
     template_name = 'post.html'
     queryset = Post.objects.all()
@@ -84,7 +86,6 @@ class PostsAdd(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs): 
         context = super().get_context_data(**kwargs)
-        # context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset()) # вписываем наш фильтр в контекст
         context['categories'] = Category.objects.all()
         context['authors'] = Author.objects.all()
         context['types'] = Post.TYPES
@@ -104,6 +105,19 @@ class PostsAdd(LoginRequiredMixin, CreateView):
         post.save()                                  # и сохраняем
         post.category.set(category)                  # Добавляем категорию
         post.save()                                  # и сохраняем
+        subscribers_list = UsersSubscribed.objects.filter(category=category)
+        for each in subscribers_list:
+            print(each)
+            hello_text = f'Здравствуй, {each.user}. Новая статья в твоём любимом разделе!\n'
+            html_content = render_to_string('mail_to_subscribers.html', {'header': header, 'main_text': main_text, 'hello_text': hello_text,})
+            msg = EmailMultiAlternatives(
+            subject=f'{header}',
+            body=hello_text+main_text[:50],
+            from_email=EMAIL_HOST_USER,
+            to=[each.user.email],
+            )
+            msg.attach_alternative(html_content, "text/html") # добавляем html
+            msg.send()
         return super().get(request, *args, **kwargs) # отправляем пользователя обратно на GET-запрос.
 
 class PostEdit(LoginRequiredMixin, UpdateView):
@@ -140,30 +154,29 @@ class BecomeAnAuthor(LoginRequiredMixin, TemplateView):
             author_group.user_set.add(self.request.user)
         return context
     
-# class ShowProfilePageView(DetailView):
-#     model = Profile
-#     template_name = 'user_profile.html'
-
-#     def get_context_data(self, *args, **kwargs):
-#         users = Profile.objects.all()
-#         context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
-#         page_user = get_object_or_404(Profile, id=self.kwargs['pk'])
-#         context['page_user'] = page_user
-#         return context
-    
-# class CreateProfilePageView(CreateView):
-#     model = Profile
-    
-#     template_name = 'create_profile.html'
-#     fields = ['userpic', 'bio']
-#     # fields = '__all__'
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         return super().form_valid(form)
-
-#     success_url = reverse_lazy('/')
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'change_password.html'
     success_message = "Successfully Changed Your Password"
     success_url = reverse_lazy('users-profile')
+
+class SubscribeToCategory(LoginRequiredMixin, TemplateView):
+    template_name = 'subscribe.html'
+    model = UsersSubscribed
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        UsersSubscribed.objects.create(user=self.request.user, category=Category.objects.get(pk=context['pk']))
+        context['subscribed'] = Category.objects.get(pk=context['pk'])
+        return context
+    
+class UnSubscribeToCategory(LoginRequiredMixin, TemplateView):
+    template_name = 'unsubscribe.html'
+    model = UsersSubscribed
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        delete_subcription = UsersSubscribed.objects.get(user=self.request.user, category=Category.objects.get(pk=context['pk']))
+        delete_subcription.delete()
+        context['unsubscribed'] = Category.objects.get(pk=context['pk'])
+        return context

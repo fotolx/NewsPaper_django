@@ -7,10 +7,18 @@
  
 {% block content %}
     <h1>{{ post.header | censor }}</h1>
+    {% for each in post.category.filter %}
+    [ {{each}} ]
+    {% endfor %}
     <i>{{ post.creation_date_time| date:'d-M-Y g:i' }} |
     {{ post.author.username.first_name}} {{ post.author.username.last_name}}</i>
     <a href="{% url 'edit_post' post.id %}">[Редактировать]</a>
     <a href="{% url 'delete_post' post.id %}">[Удалить]</a>
     <hr>
     {{ post.main_text | censor }}
+    <p>
+    {% for each in post.category.filter %}
+    <a href="{% url 'subscribe' each.id %}">[ Подписаться на категорию {{ each }} ]</a>
+    {% endfor %}
+    </p>
 {% endblock content %}

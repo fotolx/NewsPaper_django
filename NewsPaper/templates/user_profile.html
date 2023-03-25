@@ -16,6 +16,14 @@
             </button>
         </div>
     {% endif %}
+    {% if user.category_set.filter %}
+    <div class="col-md-5"><p>
+        Подписан на разделы:<br>
+        {% for each in user.category_set.filter %}
+        [ {{ each }}  <a href="{% url 'unsubscribe' each.id %}">Отписаться</a>]<br>
+        {% endfor %}
+    </p></div>
+    {% endif %}
     <div class="form-content">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}

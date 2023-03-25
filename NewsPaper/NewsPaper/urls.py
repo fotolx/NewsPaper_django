@@ -22,12 +22,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('news/', include('news.urls')),
-    # path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('allauth.urls')),
-    # path('success/', upgrade_me, name = 'success'),
     path('success/', BecomeAnAuthor.as_view(), name = 'success'),
-    # path('profile/<int:pk>/', ShowProfilePageView.as_view(), name='user_profile'),
-    # path('create_profile_page/',CreateProfilePageView.as_view(), name='create_user_profile'),
     path('profile/', profile, name='users-profile'),
     path('password-change/', ChangePasswordView.as_view(), name='password_change'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

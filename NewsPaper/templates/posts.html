@@ -13,7 +13,11 @@
     {% if posts %} 
         {% for post in posts %}
             <span><h3><a href="{{ post.id }}">{{ post.header | censor  }} </a></h3>
-            <p><i>{{ post.creation_date_time| date:'d-M-Y g:i' }} |
+            <p>
+                {% for each in post.category.filter %}
+                [ {{each}} ]
+                {% endfor %}
+                 <i>{{ post.creation_date_time| date:'d-M-Y g:i' }} |
                   {{ post.author.username.first_name}} {{ post.author.username.last_name}}</i><br>
             {{ post.main_text|censor|truncatechars:50 }}
             <br>
