@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{header}}</title>
+</head>
+<body>
+<h1>{{hello_text}}</h1>
+    {% for post in posts %}
+        <p>{{ post.author.username.first_name}} {{ post.author.username.last_name}} [{{ post.creation_date_time| date:'d-M-Y g:i' }}] <a href="{{site_link}}{% url 'details' post.id %}">{{ post.header }}</a></p>
+    {% endfor %}
+</body>
+</html>
