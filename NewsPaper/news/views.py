@@ -13,9 +13,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from .forms import UpdateUserForm, UpdateProfileForm
-from django.core.mail import EmailMultiAlternatives
 from NewsPaper.settings import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_SSL
 from django.template.loader import render_to_string
+from datetime import date
 
 
 @login_required
@@ -100,24 +100,14 @@ class PostsAdd(LoginRequiredMixin, CreateView):
         main_text = request.POST['main_text']
         rating = request.POST['rating']
         category = request.POST['category']
+        publications = Post.objects.filter(author=Author.objects.get(username=author)).filter(creation_date_time__date=date.today())
+        if publications.count() >= 3:
+            return render(request, 'too_many_publications.html')
         post = Post(author=Author.objects.get(username=author), type=type, header=header, 
         main_text=main_text, rating=rating)          # создаём новую публикацию
         post.save()                                  # и сохраняем
         post.category.set(category)                  # Добавляем категорию
         post.save()                                  # и сохраняем
-        subscribers_list = UsersSubscribed.objects.filter(category=category)
-        for each in subscribers_list:
-            print(each)
-            hello_text = f'Здравствуй, {each.user}. Новая статья в твоём любимом разделе!\n'
-            html_content = render_to_string('mail_to_subscribers.html', {'header': header, 'main_text': main_text, 'hello_text': hello_text,})
-            msg = EmailMultiAlternatives(
-            subject=f'{header}',
-            body=hello_text+main_text[:50],
-            from_email=EMAIL_HOST_USER,
-            to=[each.user.email],
-            )
-            msg.attach_alternative(html_content, "text/html") # добавляем html
-            msg.send()
         return super().get(request, *args, **kwargs) # отправляем пользователя обратно на GET-запрос.
 
 class PostEdit(LoginRequiredMixin, UpdateView):

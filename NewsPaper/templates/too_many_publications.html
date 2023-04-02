@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %} 
+ 
+{% block title %}
+Слишком много публикаций
+{% endblock title %}
+ 
+{% block content %}
+    <h1>{{ user.get_username }}, вы опубликовали много материала сегодня!</h1>
+        <h2>Позвольте пользователям прочитать его. И добавьте свежий материал завтра.</h2>
+{% endblock content %}
