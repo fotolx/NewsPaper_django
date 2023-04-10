@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
+from django.core.cache import cache
 
 class Author(models.Model):
     username = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,13 +31,24 @@ class Category(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+    # def user(self):
+    #     # return f'{self.userssubscribed_set.all()}'
+    #     users = []
+    #     for each in self.userssubscribed_set.all().values():
+    #         users.append(User.objects.get(id=each['user_id']).username)
+    #     return ', '.join(users)
+
+    # @property
+    # def userssubscribed(self):
+    #     return f'{self.userssubscribed_set.all().count()}' 
+
 class UsersSubscribed(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     category = models.ForeignKey(Category, on_delete = models.CASCADE)
 
     def __str__(self):
         return f'{self.user} is subscribed to category {self.category}'
-
+    
 class Post(models.Model):
     author = models.ForeignKey(Author, null=False, on_delete = models.CASCADE)
     article = 'ar'
@@ -71,7 +83,11 @@ class Post(models.Model):
 
     # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с новостью
     def get_absolute_url(self): 
-        return f'/news/{self.id}'  # Стоит заменить на переменную
+        return f'/news/{self.id}'  # FIXME Стоит заменить на переменную
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs) # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}') # затем удаляем его из кэша, чтобы сбросить его
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE)
