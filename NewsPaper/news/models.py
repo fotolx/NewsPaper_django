@@ -9,7 +9,7 @@ class Author(models.Model):
     
     def __str__(self):
         return f'{self.username}'
-
+    
     def update_rating(self):
         author_rating = Post.objects.filter(author__exact=self).values('rating')
         author_comments = Comment.objects.filter(user__exact=User.objects.get(id__exact=self.id)).values('comment_rating')

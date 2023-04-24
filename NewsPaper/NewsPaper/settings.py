@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-n)%uw8^4)(p9=*qoqdmetxfm5d8m^ur=xb)+vg%tfjsh3qwdm2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -164,7 +164,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-# EMAIL_FILE_PATH = '/tmp/app-messages'
+# EMAIL_FILE_PATH = '/tmp/app-messages/'
 
 EMAIL_HOST = str(os.getenv('EMAIL_HOST'))
 EMAIL_PORT = str(os.getenv('EMAIL_PORT'))
@@ -182,3 +182,120 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Указываем, куда будем сохранять кэшируемые файлы! Не забываем создать папку cache_files внутри папки с manage.py!
     }
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[{asctime}] [{levelname}] {message}',
+            'style': '{',
+        },
+        'warning_format': {
+            'format': '[{asctime}] [{levelname}] {message} {pathname}',
+            'style': '{',
+        },
+        'error_format': {
+            'format': '[{asctime}] [{levelname}] {message} {pathname} {exc_info}',
+            'style': '{',
+        },
+        'info_file_format': {
+            'format': '[{asctime}] [{levelname}] {module} {message}',
+            'style': '{',
+        },
+        'error_file_format': {
+            'format': '[{asctime}] * [{levelname}] {message} {pathname} {exc_info}',
+            'style': '{',
+        },
+        'error_mail_format': {
+            'format': '[{asctime}] [{levelname}] {message} {pathname}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            # 'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'console_warning': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'warning_format'
+        },
+        'console_error': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'error_format'
+        },
+        'general_log': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'info_file_format'
+        },
+        'error_log': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'errors.log',
+            'formatter': 'error_file_format'
+        },
+        'security_log': {
+            'class': 'logging.FileHandler',
+            'filename': 'security.log',
+            'formatter': 'info_file_format'
+        },
+        'mail_admins': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'error_mail_format',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['general_log', 'console_error', 'console_warning',  'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['error_log', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['error_log', 'mail_admins' ],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.template': {
+            'handlers': ['error_log'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.db_backends': {
+            'handlers': ['error_log'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.security': {
+            'handlers': ['security_log'],
+            'propagate': True,
+        },
+    }
+}
+
+ADMINS = [("John", "john@example.com"), ("Mary", "mary@example.com")] # TODO Must be real admins. 

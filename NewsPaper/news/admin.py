@@ -1,13 +1,32 @@
 from django.contrib import admin
 from .models import *
 
+def nullfy_comment_rating(modeladmin, request, queryset): 
+    queryset.update(comment_rating=0)
+nullfy_comment_rating.short_description = 'Обнулить рейтинг'
+
+def nullfy_post_rating(modeladmin, request, queryset): 
+    queryset.update(rating=0)
+nullfy_post_rating.short_description = 'Обнулить рейтинг'
+
+
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Author._meta.get_fields()]
+    # fields_admin = Author._meta.get_fields()
+    # list_display = [field.name for field in Author._meta.get_fields()]
+    list_display = ('username', 'fio', 'user_rating', 'post',)
+    list_filter = ('user_rating',)
+    # fields = ('username', 'user_rating', )
+    
+    def fio(self, row):
+        return f'{row.username.first_name} {row.username.last_name}'
+
+    @admin.display(description='Posts count')
+    def post(self, row):
+        return row.post_set.all().count()
 
 class CategoryAdmin(admin.ModelAdmin):
-    # categories = Category._meta.get_fields()
-    # list_display = [field.name for field in categories]
     list_display = ('name', 'userssubscribed', '_users', )
+    list_filter = ('name',)
 
     @admin.display(description='Users list',)
     def	_users(self, row):
@@ -16,21 +35,14 @@ class CategoryAdmin(admin.ModelAdmin):
     @admin.display(description='Subscribers count',)
     def userssubscribed(self, row):
         return f'{row.userssubscribed_set.all().count()}' 
-    
-    # def user(self, user):
-    #     groups = []
-    #     for group in user.groups.all():
-    #         groups.append(group.name)
-    #     return ' '.join(groups)
-        # group.short_description = 'Groups'
 
 class PostAdmin(admin.ModelAdmin):
-    fields = Post._meta.get_fields()  # При наличии этой строки падает на редактировании
-    # list_display = [field.name for field in Post._meta.get_fields()]
-    # list_display = ('header', 'author',  'creation_date_time',  )
     list_display = ('id', 'post_author', 'type', 'postcategory', 'post_header', 'post_text', 'rating', 'comment', 'creation_date_time',  )
-    # list_display = [field.name for field in Post._meta.get_fields() if not field.many_to_many]
+    list_filter = ('type', 'category', 'rating', 'creation_date_time')
+    search_fields = ('type', 'header', 'main_text', )
+    actions = [nullfy_post_rating]
 
+    @admin.display(description='Category',)
     def postcategory(self, row):
         return ', '.join([x.name for x in row.category.all()])
     
@@ -53,15 +65,25 @@ class PostAdmin(admin.ModelAdmin):
 
 class PostCategoryAdmin(admin.ModelAdmin):
     list_display = [field.name for field in PostCategory._meta.get_fields()]
+    list_filter = ('category', )
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Comment._meta.get_fields()]
+    list_filter = ('user', 'comment_rating')
+    actions = [nullfy_comment_rating]
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Profile._meta.get_fields()]
+    # fields_admin = Profile._meta.get_fields()
+    # list_display = [field.name for field in Profile._meta.get_fields()]
+    list_display = ('id', 'fio', 'user', 'avatar', 'bio',)
+    list_filter = ('avatar', 'bio',)
+
+    def fio(self, row):
+        return f'{row.user.first_name} {row.user.last_name}'
 
 class UsersSubscribedAdmin(admin.ModelAdmin):
     list_display = [field.name for field in UsersSubscribed._meta.get_fields()]
+    list_filter = ('user', 'category',)
 
 # Register your models here.
 admin.site.register(Author, AuthorAdmin)
