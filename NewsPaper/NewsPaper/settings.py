@@ -222,10 +222,11 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
-            # 'level': 'INFO',
+            # 'level': 'DEBUG',
+            'level': 'INFO',
             'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
+            'class': 'NewsPaper.custom_logger.CustomHandler',
+            # 'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
         'console_warning': {
